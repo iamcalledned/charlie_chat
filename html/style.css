@@ -1,0 +1,628 @@
+/* Include Roboto font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+/* Reset default margin and padding for the entire document */
+html, body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    padding-top: 20px; /* Adjust this value to create the desired space */
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100% - 20px); /* Subtract the padding from the total height */
+    box-sizing: border-box;
+
+}*, *:before, *:after {
+    box-sizing: inherit;
+  }
+
+/* Chat container styles */
+#chat-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0; /* Remove margin on mobile */
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 95%;
+}
+
+/* Message container styles */
+#messages {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Message styles */
+
+/* User message styles */
+.message.user {
+    background-color:#07777a; /* User message background color */
+    color: white;
+    align-self: flex-end; /* Aligns the user messages to the right */
+    margin-right: 10px; /* Additional margin for better spacing */
+    border-radius: 20px; /* Rounded corners for user messages */
+    padding: 10px 15px; /* Padding for user messages */
+}
+/* Add bubble tail for user messages */
+.message.user::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border: 15px solid transparent;
+    border-top-color: #DCF8C6;
+    border-bottom: 0;
+    margin-right: -15px;
+    margin-bottom: -15px;
+}
+/* Add bubble tail for bot messages */
+.message.bot::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border: 15px solid transparent;
+    border-top-color: #ffffff;
+    border-bottom: 0;
+    margin-left: -15px;
+    margin-bottom: -15px;
+}
+
+/* Bot message styles */
+.message.bot {
+    background-color: #aaeaec; /* Bot message background color */
+    color: black;
+    align-self: flex-start; /* Aligns the bot messages to the left */
+    margin-left: 10px; /* Additional margin for better spacing */
+    border-radius: 20px; /* Rounded corners for bot messages */
+    padding: 10px 15px; /* Padding for bot messages */
+}
+/* Bot message styles */
+.message-bubble {
+    background-color:#aaeaec; /* Bot message background color */
+    color: black;
+    align-self: flex-start; /* Aligns the bot messages to the left */
+    margin-left: 10px; /* Additional margin for better spacing */
+    border-radius: 20px; /* Rounded corners for bot messages */
+    padding: 10px 15px; /* Padding for bot messages */
+}
+/* Show recipe message differently */
+.message-bubble.recipe-message {
+    border-color: #4CAF50; /* Example: Green border for recipe messages */
+    background-color: #ebf8f2; /* Light green background */
+    /* Other styling specific to recipe messages */
+}
+.message-bubble.shopping-list-message {
+    border-color: #99af4c; /* Example: Green border for recipe messages */
+    background-color: #ebf8f2; /* Light green background */
+    /* Other styling specific to recipe messages */
+}
+
+/* Typing indicator container styles */
+#typing-container {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+}
+
+/* Typing text styles */
+#typing-text {
+    font-size: 0.8em;
+    color: #555;
+    margin-right: 5px;
+}
+
+/* Typing indicator dot animation */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    margin: 0 2px;
+    background-color: black;
+    border-radius: 50%;
+    animation: slide 1s infinite alternate;
+}
+
+@keyframes slide {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(20px); }
+}
+
+/* Input group styles */
+.input-group {
+    display: flex;
+    padding: 0 10px 10px 10px;
+    align-items: center;
+}
+
+/* Message input styles */
+#message-input {
+    flex-grow: 2; /* Will take up available space */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 18px;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 50px; /* Set a min-height */
+    overflow-y: auto; /* Allow it to scroll */
+    resize: none; /* If you do not want users to manually resize it */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+
+}
+
+/* Send button styles */
+#send-button {
+    padding: 10px 15px;
+    flex-grow: 0; /* Prevent button from growing */
+    flex-shrink: 0; /* Prevent button from shrinking */
+    width: auto; /* Allow the button to be only as wide as its content */
+   background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1.6;
+    transition: background-color 0.3s ease;
+}
+
+/* Send button hover effect */
+#send-button:hover {
+    background-color: #0056b3;
+}
+
+/* Media query for smaller screens (e.g., mobile devices) */
+@media (max-width: 768px) {
+    #chat-container {
+        height: 90vh; /* Reduced height for better mobile fit */
+        width: 95%;
+        margin-top: 0; /* Or a smaller value than you currently have */
+        margin: 5px auto 10px auto; /* Smaller top margin, auto horizontal margins, slightly larger bottom margin */
+        display: flex;
+        flex-direction: column; /* Ensures contents are laid out vertically */
+    }
+
+    #messages {
+        flex-grow: 1; /* Allows chat messages to fill available space */
+        overflow-y: auto; /* Ensures scrolling within the messages area */
+        /* Reduce or adjust padding/margin as needed */
+    }
+    
+    .recipe-title {
+        max-width: 100px; /* Adjust width for smaller screens */
+    }
+
+    /* Ensure the chat entry (input group) is always visible */
+    .input-group {
+        margin-bottom: 10px; /* Adjust as needed */
+    }
+}
+/* Chat header styles (if you have a header) */
+.chat-header {
+    display: flex;
+    justify-content: center; /* Center logo horizontally */
+    align-items: center; /* Center logo vertically */
+    padding: 10px; /* Add some padding */
+    background-color: #f5f5f5; /* Set a background color, if desired */
+}
+
+/* Chat logo styles (if you have a logo) */
+.chat-logo {
+    max-height: 50px; /* Limit the size of the logo */
+    width: auto; /* Maintain aspect ratio */
+    /* Add other styling as needed */
+}
+/* Chat header styles */
+.chat-header {
+    position: relative; /* This allows absolute positioning relative to the header */
+    display: flex;
+    justify-content: center; /* Keeps the logo centered */
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+}
+
+/* Hamburger menu button styles */
+.hamburger-menu {
+    position: absolute; /* Position the menu absolutely to the left */
+    left: 10px; /* Adjust as needed, based on desired spacing from the left edge */
+    top: 50%; /* Start at the vertical center of the header */
+    transform: translateY(-50%); /* Shift upwards by half its height to center it */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px; /* Width of the button */
+    height: 25px; /* Height of the button */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.hamburger-menu span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background: #333; /* Color of the menu lines */
+    border-radius: 3px;
+}
+
+/* Ensure the logo doesn't move */
+.chat-logo {
+    z-index: 1; /* Ensure logo stays on top and isn't overlapped by the absolute-positioned elements */
+}
+
+.options-menu {
+    /* ... existing styles ... */
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    width: 100%;
+    /* ... other styles ... */
+  }
+
+  .options-menu.show {
+    display: block; /* This makes the menu visible when the 'show' class is added */
+    background-color: rgb(255, 255, 255); /* This is just for testing, you can remove it later */
+}
+
+/* Add styles for the shopping list overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.shopping-list-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 400px;
+}
+/* Recipe Box Overlay - covers the entire screen with a semi-transparent background */
+.recipe-box-overlay {
+    position: fixed; /* Stay in the same place even when the window is scrolled */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    z-index: 1000; /* Make sure it's on top of other elements */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+/* Hidden class for toggling display */
+.recipe-box-overlay.hidden {
+    display: none;
+}
+
+/* Recipe Box Content - the white box that contains the recipes */
+.recipe-box-content {
+    position: relative; /* Keep this the same */
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 400px; /* Maximum width of the box */
+    width: 90%; /* Make it responsive: it should take up 90% of the screen width */
+    max-height: 80vh; /* Maximum height before scrolling */
+    overflow-y: auto; /* Add a scrollbar if the content overflows */
+}
+
+
+.recipe-list-container {
+    max-height: calc(80vh - 60px); /* Adjust the value as needed, 60px is the height of the header */
+    overflow-y: auto;
+}
+
+/* Individual Recipe Titles within the Recipe Box */
+.recipe-title {
+    background: #f0f0f0; /* Light grey background */
+    margin: 2px 0; /* Add some space between titles */
+    padding: 5px; /* Padding inside the recipe titles */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Change cursor to indicate it's clickable */
+    white-space: normal; /* Allow text to wrap */
+    word-wrap: break-word; /* If the word is too long, break and move to the next line */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Show ellipsis if text is too long */
+    max-width: 100%; /* Ensure it does not exceed the container width */
+    flex-grow: 1; /* Allows the title to grow and fill available space */
+    margin-right: 10px; /* Spacing between the title and the button */
+}
+.remove-recipe-button {
+    padding: 5px 10px; /* Smaller padding for a smaller button */
+    background-color: #d9534f; /* Or any color you wish */
+    color: white;
+    border: none;
+    border-radius: 4px; /* Rounded corners for the button */
+    cursor: pointer;
+    /* Add any additional styles to match your design */
+}
+
+
+
+/* Button to Close the Recipe Box Overlay */
+/* Button to Close the Recipe Box Overlay */
+#close-recipe-box {
+    position: absolute; /* Position absolute to the overlay */
+    right: 20px; /* Align to the right side of the overlay */
+    top: 20px; /* Align to the top of the overlay */
+    padding: 10px 20px;
+    background-color: #644fd9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001; /* Ensure it's above the overlay content */
+}
+
+/* Scrollable Recipe List */
+#recipe-box {
+    list-style-type: none; /* Remove default list bullets */
+    padding: 5px; /* Remove default padding */
+    margin: 20px 0; /* Remove default margin */
+}
+
+.menu-items {
+  max-width: 200px; /* Set the maximum width you want */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd; /* Separates menu items */
+}
+
+.menu-item:hover {
+  background-color: #f2f2f2; /* Hover effect for menu items */
+}
+.save-recipe-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    float: right; 
+    margin-right: 10px; /* Add some right margin if needed */
+    /* Or, if you're using flexbox: */
+    /* margin-left: auto; */
+    background-color: #FF4081; /* A bright, modern color */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 20px; /* Rounded corners */
+    padding: 10px 20px; /* Top/bottom and left/right padding */
+    text-transform: uppercase; /* Makes the text uppercase */
+    font-weight: bold; /* Makes the text bold */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+.print-recipe-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    float: left; 
+    margin-right: 10px; /* Add some right margin if needed */
+    /* Or, if you're using flexbox: */
+    /* margin-left: auto; */
+    background-color: #04611b; /* A bright, modern color */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 20px; /* Rounded corners */
+    padding: 10px 20px; /* Top/bottom and left/right padding */
+    text-transform: uppercase; /* Makes the text uppercase */
+    font-weight: bold; /* Makes the text bold */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.save-shopping-list-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    float: left; 
+    margin-right: 10px; /* Add some right margin if needed */
+    /* Or, if you're using flexbox: */
+    /* margin-left: auto; */
+    background-color: #04611b; /* A bright, modern color */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 20px; /* Rounded corners */
+    padding: 10px 20px; /* Top/bottom and left/right padding */
+    text-transform: uppercase; /* Makes the text uppercase */
+    font-weight: bold; /* Makes the text bold */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+.srecipe-saved-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    float: right; 
+    margin-right: 10px; /* Add some right margin if needed */
+    /* Or, if you're using flexbox: */
+    /* margin-left: auto; */
+    background-color: #1ebb7a; /* A bright, modern color */
+    
+    border: none; /* No border */
+    border-radius: 20px; /* Rounded corners */
+    padding: 10px 20px; /* Top/bottom and left/right padding */
+    text-transform: uppercase; /* Makes the text uppercase */
+    font-weight: bold; /* Makes the text bold */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    background-color: #cccccc; /* Example: gray background for disabled button */
+    color: #666666; /* Dimmed text color */
+    cursor: not-allowed; /* Change cursor to indicate the button is disabled */
+}
+
+
+.save-recipe-button:hover {
+    background-color: #E040FB; /* A slightly different color on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Larger shadow on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+/* Overlay styles */
+.tooltip {
+    position: absolute;
+    top: -35px; /* Adjust as needed */
+    right: 0;
+    background-color: #333;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.notification-bubble {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+/* Style for individual recipe items */
+.recipe-item {
+    display: flex; /* Aligns title and button in a row */
+    justify-content: space-between; /* Puts space between title and button */
+    align-items: center; /* Vertically centers items in the row */
+    background: #f0f0f0; /* Light grey background */
+    margin: 5px 0; /* Space between recipe items */
+    padding: 5px; /* Padding inside each recipe item */
+    border-radius: 4px; /* Rounded corners for the recipe item */
+}
+
+/* Style for the recipe title within each item */
+.recipe-title {
+    flex-grow: 1; /* Allows the title to take up available space */
+    margin-right: 10px; /* Ensures spacing between title and remove button */
+    /* Inherits other styles from your existing .recipe-title */
+}
+
+/* Style for the remove button within each item */
+.remove-recipe-button {
+    padding: 5px 10px; /* Smaller padding for a smaller button */
+    background-color: #d9534f; /* Or any color you wish */
+    color: white; /* Text color */
+    border: none; /* No border for the button */
+    border-radius: 4px; /* Rounded corners for the button */
+    cursor: pointer; /* Cursor indicates the button is clickable */
+    /* You may want to adjust the font size if the button text is too large or small */
+    font-size: 0.8em; /* Example: setting a smaller font size for the button */
+}
+
+/* You might want to add a hover effect for the button */
+.remove-recipe-button:hover {
+    background-color: #b23c35; /* Darker shade on hover for feedback */
+}
+
+#personaSelection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: #ffffff; /* Use a white or off-white color for a cleaner look */
+    padding: 30px; /* Increase padding for a more spacious feel */
+    border-radius: 10px; /* Larger radius for softer rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soften the shadow for subtlety */
+    z-index: 1000;
+    width: 340px; /* Set a fixed width for a more consistent appearance */
+    height: auto;
+    border: 1px solid #eaeaea; /* Optional: adds a subtle border */
+    transition: all 0.3s ease; /* Smooth transition for interactions */
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0s linear 0.3s, opacity 0.3s linear; /* Notice the 0.3s delay for visibility */
+}
+
+#personaDropdown {
+    width: calc(100% - 20px); /* Adjust width to account for padding */
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #eaeaea; /* Add a border to the dropdown for definition */
+    border-radius: 5px; /* Slight rounding of the corners */
+    background-color: #f8f8f8; /* Slightly off-white background for the dropdown */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Inner shadow for depth */
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px; /* Slightly more padding for a larger click area */
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px; /* Consistent border-radius with the dropdown */
+    font-weight: 500; /* Medium font weight for the button text */
+    letter-spacing: 0.5px; /* Slightly more letter-spacing for a modern touch */
+    transition: background-color 0.3s ease; /* Transition for the hover effect */
+}
+
+button:hover {
+    background-color: #0056b3; /* Slightly darker shade on hover for better interaction feedback */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Shadow effect on hover for depth */
+}
+
+/* Optional: Adding a slight fade-in effect when the selection appears */
+
+#personaSelection.show {
+    opacity: 1;
+    visibility: visible;
+    transition: visibility 0s linear 0s, opacity 0.3s linear;
+}

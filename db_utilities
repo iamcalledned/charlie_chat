@@ -1,0 +1,120 @@
+-- Create user_data table first as it will be referenced by other tables
+CREATE TABLE user_data (
+    userID int NOT NULL AUTO_INCREMENT,
+    username varchar(255) NOT NULL UNIQUE,
+    email varchar(255),
+    name varchar(255),
+    setup_date datetime,
+    last_login_date datetime,
+    current_session_id varchar(48),
+    PRIMARY KEY (userID)
+);
+
+-- Create recipes table
+CREATE TABLE recipes (
+    recipe_seq_num INT AUTO_INCREMENT PRIMARY KEY,
+    userID INT NOT NULL,
+    title VARCHAR(255),
+    ingredients TEXT,
+    instructions TEXT,
+    FOREIGN KEY (userID) REFERENCES user_data(userID)
+);
+
+-- Create conversations table
+CREATE TABLE conversations (
+    ConversationID int NOT NULL AUTO_INCREMENT,
+    userID int NOT NULL,
+    threadID varchar(36) NOT NULL,
+    RunID varchar(36) NOT NULL,
+    Message text NOT NULL,
+    Timestamp datetime DEFAULT CURRENT_TIMESTAMP,
+    MessageType varchar(255) NOT NULL,
+    IPAddress varchar(255),
+    Status varchar(255) DEFAULT 'active',
+    PRIMARY KEY (ConversationID),
+    FOREIGN KEY (userID) REFERENCES user_data(userID)
+);
+
+-- Create threads table
+CREATE TABLE threads (
+    threadID varchar(36) NOT NULL,
+    userID int NOT NULL,
+    IsActive tinyint(1) NOT NULL,
+    CreatedTime datetime NOT NULL,
+    PRIMARY KEY (threadID),
+    FOREIGN KEY (userID) REFERENCES user_data(userID)
+);
+
+
+CREATE TABLE verifier_store (
+    state varchar(255) NOT NULL,
+    code_verifier varchar(255) NOT NULL,
+    client_ip varchar(15),
+    login_timestamp timestamp,
+    PRIMARY KEY (state)
+);
+
+CREATE TABLE Recipes (
+    RecipeID INT AUTO_INCREMENT PRIMARY KEY,
+    userID INT,
+    Title VARCHAR(255),
+    PrepTime VARCHAR(100),
+    CookTime VARCHAR(100),
+    TotalTime VARCHAR(100),
+    ServingSize VARCHAR(100),
+    FOREIGN KEY (userID) REFERENCES user_data(userID)
+);
+
+CREATE TABLE Ingredients (
+    IngredientID INT AUTO_INCREMENT PRIMARY KEY,
+    RecipeID INT,
+    Description TEXT,
+    FOREIGN KEY (RecipeID) REFERENCES Recipes(RecipeID)
+);
+
+CREATE TABLE Directions (
+    DirectionID INT AUTO_INCREMENT PRIMARY KEY,
+    RecipeID INT,
+    StepNumber INT,
+    Instruction TEXT,
+    FOREIGN KEY (RecipeID) REFERENCES Recipes(RecipeID)
+);
+
+
+
+CREATE TABLE Recipes (
+    recipe_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_name VARCHAR(255) NOT NULL,
+    servings VARCHAR(50),
+    prepTime VARCHAR(50),
+    cookTime VARCHAR(50),
+    totalTime VARCHAR(50)
+);
+
+CREATE TABLE Parts (
+    part_id INT AUTO_INCREMENT PRIMARY KEY,
+    recipe_id INT,
+    part_name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id)
+);
+
+CREATE TABLE Ingredients (
+    ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE RecipePartsIngredients (
+    recipe_part_id INT,
+    ingredient_id INT,
+    quantity VARCHAR(100),
+    FOREIGN KEY (recipe_part_id) REFERENCES Parts(part_id),
+    FOREIGN KEY (ingredient_id) REFERENCES Ingredients(ingredient_id)
+);
+
+CREATE TABLE Instructions (
+    instruction_id INT AUTO_INCREMENT PRIMARY KEY,
+    part_id INT,
+    step_number INT NOT NULL,
+    instruction_text TEXT NOT NULL,
+    FOREIGN KEY (part_id) REFERENCES Parts(part_id)
+);

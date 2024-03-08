@@ -1,0 +1,21 @@
+{
+    "short_name": "WhattoGrill",
+    "name": "WhattoGrill chatbot app",
+    "icons": [
+      {
+        "src": "what_to_grill_image_round_pwa.small.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "what_to_grill_image_round_pwa.large.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "start_url": "/index.html",
+    "background_color": "#FFFFFF",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#FFFFFF"
+  }
