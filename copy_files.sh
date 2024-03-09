@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define source and destination directories
-SOURCE_DIR="/home/ned/projects/generic_chat/html"
-DESTINATION_DIR="/var/www/iamcalledned.ai"
+SOURCE_DIR="/home/charlie/generic_chat/html"
+DESTINATION_DIR="/var/www/iamcalledcharlie"
 
 # Prompt the user for the file names to copy
 echo "Please enter the file names to copy, separated by spaces:"

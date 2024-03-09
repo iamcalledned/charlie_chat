@@ -29,8 +29,7 @@ class Config:
     SESSION_SECRET_KEY = os.getenv('SESSION_SECRET_KEY')
     LOG_PATH_PROCESS_HANDLER = os.getenv('LOG_PATH_PROCESS_HANDLER')
     PERSONA_ASSISTANT_MAPPING = {
-        "Timmy": "asst_yUIJI6tt54F4xyzr5cq2cxtw",
+        "GPT-4": "asst_yUIJI6tt54F4xyzr5cq2cxtw",
         "Glenda": "asst_cgxnYmrSbd8SSdcJux0LrZfh",
-        "Ned": "asst_RE88l2N9AIxFA1niUmyQlqEC",
         # Add more mappings as needed
     }
