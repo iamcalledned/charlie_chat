@@ -83,6 +83,7 @@ async def schedule_verifier_cleanup(pool, redis_client):
 async def login(request: Request):
     #set login timestemp
     login_timestamp  = datetime.datetime.now()
+    print('!!!!!!!!!!!login!!!!!!!!!!!!!!!!!!')
 
 
     # Getting the client's IP address
@@ -102,7 +103,7 @@ async def login(request: Request):
         f"&redirect_uri={Config.REDIRECT_URI}&state={state}&code_challenge={code_challenge}"
         f"&code_challenge_method=S256"
     )
-    
+    print(cognito_login_url)
     return RedirectResponse(cognito_login_url)
 
 ################################################################## 
