@@ -116,8 +116,10 @@ async def login(request: Request):
 
 @app.get("/callback")
 
+
 async def callback(request: Request, code: str, state: str):
-    
+
+    print('!!!!!!!!!!!callback!!!!!!!!!!!!!!!!!!')    
      # Extract query parameters
     query_params = request.query_params
     code = query_params.get('code')
