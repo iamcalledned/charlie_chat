@@ -28,7 +28,7 @@ from process_recipe import process_recipe
 OPENAI_API_KEY = Config.OPENAI_API_KEY
 
 
-log_file_path = '/home/ned/projects/generic_chat/generate_answer_logs.txt'
+log_file_path = '/home/charlie/generic_chat/generate_answer_logs.txt'
 logging.basicConfig(
     filename=log_file_path,
     level=logging.DEBUG,  # Adjust the log level as needed (DEBUG, INFO, WARNING, ERROR, CRITICAL)

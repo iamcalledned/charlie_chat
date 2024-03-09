@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 # Specify the path to your .env file
-dotenv_path = '/home/ned/projects/generic_chat/.evn/.env'
+dotenv_path = '/home/charlie/charlie_chat/.evn/.env'
 
 # Load environment variables from the specified .env file
 load_dotenv(dotenv_path)
@@ -30,6 +30,5 @@ class Config:
     LOG_PATH_PROCESS_HANDLER = os.getenv('LOG_PATH_PROCESS_HANDLER')
     PERSONA_ASSISTANT_MAPPING = {
         "GPT-4": "asst_yUIJI6tt54F4xyzr5cq2cxtw",
-        "Glenda": "asst_cgxnYmrSbd8SSdcJux0LrZfh",
-        # Add more mappings as needed
+    # Add more mappings as needed
     }
