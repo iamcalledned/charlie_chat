@@ -177,11 +177,11 @@ async def callback(request: Request, code: str, state: str):
         session['username'] = decoded_token.get('cognito:username', 'unknown')
         session['name'] = decoded_token.get('name', 'unknown')
         session['session_id'] = os.urandom(24).hex()  # Generate a random state value
-        chatbot="recipebot"
+        
 
         #await save_user_info_to_mysql(app.state.pool, session, client_ip, state)
         try:
-            await save_user_info_to_userdata(app.state.pool, session, chatbot)
+            await save_user_info_to_userdata(app.state.pool, session)
         except Exception as e:
             logging.error(f"Error saving user information to userdata: {e}")
             print(f"Error saving user information to userdata: {e}")
