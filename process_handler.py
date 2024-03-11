@@ -325,3 +325,5 @@ async def get_session(request: Request):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
+    #uvicorn process_handler:app --workers 4 --port=8001 --reload
+

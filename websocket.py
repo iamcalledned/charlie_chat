@@ -304,3 +304,4 @@ async def validate_session(request: Request):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+#uvicorn websocket:app --port 8056 --ssl-keyfile /home/charlie/charlie_chat/certs/privkey.pem --ssl-certfile /home/charlie/charlie_chat/certs/fullchain.pem --reload
