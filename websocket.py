@@ -94,9 +94,11 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     cookies = websocket.cookies
     session_id_from_cookies = cookies.get('session_id')
+    print('sessionID from cookies;', session_id_from_cookies)
         # Obtain client IP address
     client_host, client_port = websocket.client
     client_ip = client_host
+    ping_task = None
     print(f"Client IP: {client_ip}")
     print("connections at websocket_endpoint:", connections)
 
@@ -117,9 +119,9 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         initial_data = await websocket.receive_text()
         initial_data = json.loads(initial_data)
-        session_id_redis = initial_data.get('session_id', '')
+        #session_id_redis = initial_data.get('session_id', '')
         session_id = session_id_from_cookies
-        print('sessionID from REdis:', session_id_redis)
+        #print('sessionID from REdis:', session_id_redis)
         print('sessionID from cookies;', session_id)
         ping_task = None
     
