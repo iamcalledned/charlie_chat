@@ -159,8 +159,18 @@ async def callback(request: Request, code: str, state: str):
         }
         print("setting redis in login")
         redis_client.set(session_id, json.dumps(session_data), ex=3600)  # ex is expiry time in seconds
-
-        
+        all_keys = redis_client.keys('*')
+        for key in all_keys:
+                value = redis_client.get(key)
+            # Assuming the value is stored as JSON
+        if value:
+            try:
+                decoded_value = json.loads(value.decode('utf-8'))
+                print(f"Key: {key.decode('utf-8')}, Value: {decoded_value}")
+            except json.JSONDecodeError:
+                    # Handle case where value is not JSON encoded
+                    print(f"Key: {key.decode('utf-8')}, Value (raw): {value.decode('utf-8')}")
+    
         
         
         # Prepare the URL with query parameters
