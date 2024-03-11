@@ -31,11 +31,6 @@ function showPersonaSelection() {
     $('#personaSelection').addClass('show');
 }
 
-function showPersonaSelection() {
-    // Use jQuery for consistency since it's used elsewhere in your script
-    $('#personaSelection').addClass('show');
-}
-
 
 function showTypingIndicator() {
     $('#typing-container').show();

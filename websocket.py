@@ -117,8 +117,10 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         initial_data = await websocket.receive_text()
         initial_data = json.loads(initial_data)
-        #session_id = initial_data.get('session_id', '')
+        session_id_redis = initial_data.get('session_id', '')
         session_id = session_id_from_cookies
+        print('sessionID from REdis:', session_id_redis)
+        print('sessionID from cookies;', session_id)
         ping_task = None
     
 
