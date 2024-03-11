@@ -2,9 +2,6 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import RedirectResponse, JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.responses import RedirectResponse
-from starlette.requests import Request
-
 
 import os
 import base64
@@ -18,6 +15,7 @@ import pymysql
 
 from config import Config
 from process_handler_database import create_db_pool, save_code_verifier, get_code_verifier, generate_code_verifier_and_challenge, get_data_from_db, save_user_info_to_userdata, delete_code_verifier, delete_old_verifiers
+import jwt
 from jwt.algorithms import RSAAlgorithm
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization
@@ -25,23 +23,20 @@ from cryptography.hazmat.backends import default_backend
 import logging
 import asyncio
 
-
 import redis
 
 log_file_path = Config.LOG_PATH
-LOG_FORMAT = 'LOGIN-PROCESS -  %(asctime)s - %(processName)s - %(name)s - %(levelname)s - %(message)s'
+LOG_FORMAT = 'generate-answer - %(asctime)s - %(processName)s - %(name)s - %(levelname)s - %(message)s'
 
 logging.basicConfig(
-    filename=Config.LOG_PATH_PROCESS_HANDLER,
+    filename=log_file_path,
     level=logging.DEBUG,  # Adjust the log level as needed (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     format=LOG_FORMAT
 )
-
+import redis
 
 # Initialize Redis client
 redis_client = redis.Redis(host='localhost', port=6379, db=0)  # Adjust host and port as needed
-logging.info(f"redis-client created at port")
-print(f"redis-client created at port")
 
 
 app = FastAPI()
@@ -50,14 +45,12 @@ app = FastAPI()
 
 
 # Define session middleware
-SESSION_SECRET_KEY = os.urandom(24).hex()
-app.add_middleware(SessionMiddleware, secret_key= SESSION_SECRET_KEY)
+app.add_middleware(SessionMiddleware, secret_key=Config.SESSION_SECRET_KEY)
 
 #####!!!!  Startup   !!!!!!################
 @app.on_event("startup")
 async def startup():
     app.state.pool = await create_db_pool()  # No argument is passed here
-    logging.info(f"Database pool created")
     print(f"Database pool created: {app.state.pool}")
     asyncio.create_task(schedule_verifier_cleanup(app.state.pool, redis_client))
 
@@ -68,11 +61,14 @@ async def schedule_verifier_cleanup(pool, redis_client):
     while True:
         # Attempt to acquire the lock
         if redis_client.set("verifier_cleanup_lock", "true", nx=True, ex=60):
+            print("Lock acquired. Running cleanup task.")
             await delete_old_verifiers(pool)
-
+            redis_client.delete("verifier_cleanup_lock")
+        else:
+            print("Lock not acquired. Skipping cleanup task.")
         
         # Wait for 60 seconds before the next attempt
-        await asyncio.sleep(600)
+        await asyncio.sleep(60)
 
 
 ################################################################## 
@@ -93,26 +89,13 @@ async def login(request: Request):
     client_ip = request.client.host
         
     #get code_verifier and code_challenge
-    try:
-        code_verifier, code_challenge = await generate_code_verifier_and_challenge()
-    # Continue with your logic if the function succeeds
-    except Exception as e:
-        # Log the error and/or handle it appropriately
-        logging.error(f"Error generating code verifier and challenge: {e}")
-        print(f"Error generating code verifier and challenge: {e}")
-        # Depending on your application's needs, you might want to return an error response, raise another exception, or take some other action.
-
-    
+    code_verifier, code_challenge = await generate_code_verifier_and_challenge()
     
     # generate a state code to link things later
     state = os.urandom(24).hex()  # Generate a random state value
     
-    try:
-        await save_code_verifier(app.state.pool, state, code_verifier, client_ip, login_timestamp)  # Corrected function name
-    except Exception as e:
-        logging.error(f"Error saving code verifier: {e}")
-        print(f"Error saving code verifier: {e}")
-        
+    
+    await save_code_verifier(app.state.pool, state, code_verifier, client_ip, login_timestamp)  # Corrected function name
     
     cognito_login_url = (
         f"{Config.COGNITO_DOMAIN}/login?response_type=code&client_id={Config.COGNITO_APP_CLIENT_ID}"
@@ -149,25 +132,12 @@ async def callback(request: Request, code: str, state: str):
         raise HTTPException(status_code=400, detail="Invalid state or code_verifier missing")
 
     #delete the code verifier since we don't really need it anymore and it's risky
-    try:
-        await delete_code_verifier(app.state.pool, state)
-    except Exception as e:
-        logging.error(f"Error deleting code verifier: {e}")
-        print(f"Error deleting code verifier: {e}")
+    await delete_code_verifier(app.state.pool, state)
     
-    try:
-        tokens = await exchange_code_for_token(code, code_verifier)
-    except Exception as e:
-        logging.error(f"Error exchanging code for token: {e}")
-        print(f"Error exchanging code for token: {e}")
-
+    tokens = await exchange_code_for_token(code, code_verifier)
     if tokens:
         id_token = tokens['id_token']
-        try:
-            decoded_token = await validate_token(id_token)
-        except Exception as e:
-            logging.error(f"Error validating token: {e}")
-            print(f"Error validating token: {e}")
+        decoded_token = await validate_token(id_token)
 
         # Retrieve session data
         session = request.session
@@ -177,47 +147,28 @@ async def callback(request: Request, code: str, state: str):
         session['username'] = decoded_token.get('cognito:username', 'unknown')
         session['name'] = decoded_token.get('name', 'unknown')
         session['session_id'] = os.urandom(24).hex()  # Generate a random state value
-        chatbot="recipebot"
 
         #await save_user_info_to_mysql(app.state.pool, session, client_ip, state)
-        try:
-            await save_user_info_to_userdata(app.state.pool, session, chatbot)
-        except Exception as e:
-            logging.error(f"Error saving user information to userdata: {e}")
-            print(f"Error saving user information to userdata: {e}")
-
+        await save_user_info_to_userdata(app.state.pool, session)
         session_id = session['session_id']
-        try:
-            session_data = {
-            'email': decoded_token.get('email', 'unknown'),
-            'username': decoded_token.get('cognito:username', 'unknown'),
-            'name': decoded_token.get('name', 'unknown'),
-            'session_id': session['session_id']
-            }
-        except Exception as e:
-            logging.error(f"Error creating session data: {e}")
-            print(f"Error creating session data: {e}")
-
-        try:
-            redis_client.set(session_id, json.dumps(session_data), ex=3600)  # ex is expiry time in seconds
-        except Exception as e:
-            logging.error(f"Error saving session data to Redis: {e}")
-            print(f"Error saving session data to Redis: {e}")
+        session_data = {
+        'email': decoded_token.get('email', 'unknown'),
+        'username': decoded_token.get('cognito:username', 'unknown'),
+        'name': decoded_token.get('name', 'unknown'),
+        'session_id': session['session_id']
+        }
+        print("setting redis in login")
+        redis_client.set(session_id, json.dumps(session_data), ex=3600)  # ex is expiry time in seconds
 
         
         
         
         # Prepare the URL with query parameters
         chat_html_url = '/chat.html'  # Replace with the actual URL of your chat.html
-        #redirect_url = f"{chat_html_url}?sessionId={session['session_id']}"
-        redirect_url = chat_html_url
-
-        response = RedirectResponse(url=redirect_url)
-        response.set_cookie(key='session_id', value=request.session['session_id'], httponly=True, secure=True)
-        return response
+        redirect_url = f"{chat_html_url}?sessionId={session['session_id']}"
 
         # Redirect the user to the chatbot interface with query parameters
-        #return RedirectResponse(url=redirect_url, status_code=302)
+        return RedirectResponse(url=redirect_url, status_code=302)
     else:
         return 'Error during token exchange.', 400
     
