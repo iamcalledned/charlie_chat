@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define source and destination directories
-SOURCE_DIR="/home/charlie/generic_chat/html"
+SOURCE_DIR="/home/charlie/charlie_chat/html"
 DESTINATION_DIR="/var/www/iamcalledcharlie"
 
 # Prompt the user for the file names to copy
