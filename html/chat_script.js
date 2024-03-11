@@ -124,7 +124,7 @@ function getOldestMessageTimestamp() {
 
 function initializeWebSocket() {
     if (!socket || socket.readyState === WebSocket.CLOSED) {
-        socket = new WebSocket('wss://www.iamcalledcharlie.ai/ws');
+        socket = new WebSocket('wss://www.iamcalledcharlie.com/ws');
 
         socket.onopen = function() {
             
