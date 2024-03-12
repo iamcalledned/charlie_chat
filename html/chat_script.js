@@ -1,4 +1,8 @@
 // Define functions in the global scope
+
+// !!!!!!!!Change WEBSOCKET_URL to your websocket!!!!!!!!!!!
+const WEBSOCKET_URL = 'wss://www.iamcalledcharlie.com/ws';
+
 let socket; // Declare the WebSocket outside of the functions
 let reconnectInterval = 1000; // Start with 1 second
 const MAX_RECONNECT_INTERVAL = 30000; // Max interval 30 seconds
@@ -26,6 +30,11 @@ function sendPersona() {
 }
 
 // This function is called when 'select_persona' message is received
+function showPersonaSelection() {
+    // Use jQuery for consistency since it's used elsewhere in your script
+    $('#personaSelection').addClass('show');
+}
+
 function showPersonaSelection() {
     // Use jQuery for consistency since it's used elsewhere in your script
     $('#personaSelection').addClass('show');
@@ -119,7 +128,7 @@ function getOldestMessageTimestamp() {
 
 function initializeWebSocket() {
     if (!socket || socket.readyState === WebSocket.CLOSED) {
-        socket = new WebSocket('wss://www.iamcalledcharlie.com/ws');
+        socket = new WebSocket(WEBSOCKET_URL);
 
         socket.onopen = function() {
             
