@@ -98,13 +98,21 @@ async def websocket_endpoint(websocket: WebSocket):
         # Obtain client IP address
     client_host, client_port = websocket.client
     client_ip = client_host
-    ping_task = None
     print(f"Client IP: {client_ip}")
     print("connections at websocket_endpoint:", connections)
 
-   
+  
     username = None
-    
+    async def ping_client():
+        while True:
+            try:
+                await websocket.send_text(json.dumps({'action': 'ping'}))
+                await asyncio.sleep(30)  # Send a ping every 30 seconds
+            except Exception as e:
+                print(f"Error sending ping: {e}")
+                break
+    ping_task = asyncio.create_task(ping_client())    
+        
     
 
     try:
@@ -283,6 +291,8 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception as e:
         print(f"Unhandled exception for user {username}: {e}")
         print("Exception Traceback: " + traceback.format_exc())
+    finally:
+        ping_task.cancel()    
     
 
 async def on_user_reconnect(username, session_id):
