@@ -40,11 +40,11 @@
             background-color: #FCC419;
             transform: scale(1.05);
         }
-        .icon {
+        .icon img {
+            width: 100px; /* Adjust as needed */
+            height: auto;
             margin: 20px 0;
-            font-size: 4rem;
             animation: bounce 2s infinite;
-            color: #FFD700;
         }
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {
@@ -62,7 +62,7 @@
 <body>
 
 <div class="chatbot-intro animated fadeIn">
-    <div class="icon">🤖</div>
+    <div class="icon"><img src="iamcalledcharlie.png" alt="Chatbot Icon"></div>
     <p>Welcome to iamcalledcharlie.com! Click below to start chatting with Charlie, your AI companion.</p>
 </div>
 <button class="login-button" onclick="redirectToLogin()">Login with Amazon Cognito</button>
