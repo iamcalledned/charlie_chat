@@ -1,7 +1,7 @@
 // Define functions in the global scope
 
 // !!!!!!!!Change WEBSOCKET_URL to your websocket!!!!!!!!!!!
-const WEBSOCKET_URL = 'wss://www.iamcalledned.ai/ws';
+const WEBSOCKET_URL = 'wss://www.iamcalledcharlie.com/ws';
 
 let socket; // Declare the WebSocket outside of the functions
 let reconnectInterval = 1000; // Start with 1 second
